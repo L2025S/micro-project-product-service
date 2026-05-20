@@ -12,13 +12,14 @@ import java.util.Objects;
 import java.util.UUID;
 
 
-@ToString
+@ToString(exclude={"description"})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PROTECTED)
 @Entity
-@Table(name="products")
+@Table(name="products",
+uniqueConstraints =@UniqueConstraint(columnNames = "uuid"), indexes = @Index(columnList ="name"))
 public class Product {
 
     @Id
