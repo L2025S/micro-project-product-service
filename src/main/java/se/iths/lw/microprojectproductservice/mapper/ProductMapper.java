@@ -13,7 +13,7 @@ public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target="uuid",ignore = true)
     @Mapping(target="createdAt", ignore = true)
-    @Mapping(target="updateAt", ignore = true)
+    @Mapping(target="updatedAt", ignore = true)
     Product toEntity(ProductRequestDTO productRequestDTO);
 
     ProductResponseDTO toResponseDTO(Product product);
