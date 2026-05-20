@@ -4,7 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import se.iths.lw.microprojectproductservice.exception.InvalidParameterException;
-import se.iths.lw.microprojectproductservice.exception.InsufficientStockException;
+import se.iths.lw.microprojectproductservice.exception.InvalidStockException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -68,7 +68,7 @@ public class Product {
             throw new InvalidParameterException("Price must be positive.");
         }
         if (stock < 0) {
-            throw new InsufficientStockException("Stock cannot be negative.");
+            throw new InvalidStockException("Stock cannot be negative.");
         }
         Product product  = new Product();
         product.name = name;
@@ -89,10 +89,10 @@ public class Product {
 
     public void reduceStock(int quantity) {
         if (quantity <= 0) {
-            throw new InsufficientStockException("Stock cannot be negative.");
+            throw new InvalidStockException("Stock cannot be negative.");
         }
         if(this.stock <quantity) {
-            throw new InsufficientStockException("Insufficient stock. Current: " + this.stock
+            throw new InvalidStockException("Insufficient stock. Current: " + this.stock
                     + ", requested " + quantity);
         }
         this.stock -= quantity;
@@ -100,7 +100,7 @@ public class Product {
 
     public void increaseStock(int quantity) {
         if (quantity <= 0){
-            throw new InsufficientStockException("Stock cannot be negative.");
+            throw new InvalidStockException("Stock cannot be negative.");
         }
 
         this.stock += quantity;
