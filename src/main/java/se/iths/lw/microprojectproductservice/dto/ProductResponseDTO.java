@@ -12,6 +12,7 @@ public record ProductResponseDTO (
     String name,
     BigDecimal price,
     String description,
+    int stock,
     LocalDateTime createdAt,
     LocalDateTime updatedAt) {
 
