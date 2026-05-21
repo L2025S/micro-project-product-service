@@ -144,4 +144,10 @@ public class ProductService {
         productRepository.delete(product);
     }
 
+
+    //============================= The method below is for order-service ==============================
+
+
+
+
 }
