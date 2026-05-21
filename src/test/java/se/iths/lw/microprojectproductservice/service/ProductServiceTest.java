@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -36,7 +35,7 @@ class ProductServiceTest {
     void create() {
 
         //Arrange
-        ProductRequestDTO productRequestDTO = new ProductRequestDTO(
+        ProductRequestDTO request = new ProductRequestDTO(
         "Wireless Noise-Cancelling Headphones",
         new BigDecimal("5999.99"),
         "Lightweight over-ear Bluetooth headphones with" +
@@ -44,54 +43,40 @@ class ProductServiceTest {
                 "and fast charging support.",
         250);
 
+        Product saved = mock(Product.class);
 
-        Product product = Product.create(
-                productRequestDTO.name(),
-                productRequestDTO.description(),
-                productRequestDTO.price(),
-                productRequestDTO.stock()
-        );
+        LocalDateTime createdAt = LocalDateTime.now().minusDays(1);
+        LocalDateTime updatedAt = LocalDateTime.now();
 
-
-        Product saved = Product.create(
-                productRequestDTO.name(),
-                productRequestDTO.description(),
-                productRequestDTO.price(),
-                productRequestDTO.stock()
-        );
-
-        when(saved.getUuid()).thenReturn("abc-123");
-        when(saved.getCreatedAt()).thenReturn(LocalDateTime.now());
-        when(saved.getUpdatedAt()).thenReturn(LocalDateTime.now());
-
-        ProductResponseDTO productResponseDTO = new ProductResponseDTO(
-                "abc-123",
-                productRequestDTO.name(),
-                productRequestDTO.price(),
-                productRequestDTO.description(),
-                productRequestDTO.stock(),
-                saved.getCreatedAt(),
-                saved.getUpdatedAt()
+        ProductResponseDTO response = new ProductResponseDTO(
+                "uuid-123",
+                request.name(),
+                request.price(),
+                request.description(),
+                request.stock(),
+                createdAt,
+                updatedAt
         );
 
         when(productRepository.save(any(Product.class))).thenReturn(saved);
-        when(productMapper.toResponseDTO(saved)).thenReturn(productResponseDTO);
+        when(productMapper.toResponseDTO(saved)).thenReturn(response);
 
+        // Act
+        ProductResponseDTO result = productService.create(request);
 
-        //Act
-        ProductResponseDTO result = productService.create(productRequestDTO);
-
-        //Assert
-        assertEquals("abc-123", result.uuid());
-        assertEquals(productRequestDTO.name(), result.name());
-        assertEquals(productRequestDTO.price(), result.price());
-        assertEquals(productRequestDTO.description(),result.description());
-        assertEquals(productRequestDTO.stock(), result.stock());
-        assertNotNull(result.createdAt());
-        assertNotNull(result.updatedAt());
+        assertEquals("uuid-123", result.uuid());
+        assertEquals(request.name(),result.name());
+        assertEquals(request.price(), result.price());
+        assertEquals(request.description(), result.description());
+        assertEquals(request.stock(), result.stock());
+        assertEquals(createdAt,result.createdAt());
+        assertEquals(updatedAt, result.updatedAt());
 
         verify(productRepository).save(any(Product.class));
         verify(productMapper).toResponseDTO(saved);
+
+
+
 
 
     }
