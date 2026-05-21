@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockRequestDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockResponseDTO;
 import se.iths.lw.microprojectproductservice.service.ProductService;
 
 import java.math.BigDecimal;
@@ -101,6 +103,17 @@ public class ProductController {
         productService.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
     }
+
+    //========================== The method below is for order-service ===================
+
+    @PostMapping("/stock/decrease")
+    public ResponseEntity<List<ProductStockResponseDTO>> decreaseStockBatch(
+            @Valid @RequestBody List<ProductStockRequestDTO> requests){
+        List<ProductStockResponseDTO> responses = productService.decreaseStockBatch(requests);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
+    }
+
 
 
 

@@ -1,20 +1,20 @@
 package se.iths.lw.microprojectproductservice.dto;
 
 
-import lombok.Builder;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Builder
-public class ProductResponseDTO {
 
-    private String uuid;
-    private String name;
-    private BigDecimal price;
-    private String description;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+public record ProductResponseDTO (
+
+    String uuid,
+    String name,
+    BigDecimal price,
+    String description,
+    int stock,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt) {
+
 }
+
