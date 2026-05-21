@@ -7,12 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockRequestDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockResponseDTO;
 import se.iths.lw.microprojectproductservice.exception.InvalidParameterException;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.mapper.ProductMapper;
 import se.iths.lw.microprojectproductservice.model.Product;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,7 +150,41 @@ public class ProductService {
 
     //============================= The method below is for order-service ==============================
 
+    public List<ProductStockResponseDTO> decreaseStockBatch(List<ProductStockRequestDTO> requests) {
+        List<ProductStockResponseDTO> responses = new ArrayList<>();
 
+        for(ProductStockRequestDTO productStockRequestDTO : requests) {
+            Product product = productRepository.findById(productStockRequestDTO.productId())
+                    .orElseThrow(()-> new ProductNotFoundException(
+                            "Product with ID: " + productStockRequestDTO.productId() + " does not exist."));
+
+            product.reduceStock(productStockRequestDTO.quantity());
+
+            ProductStockResponseDTO productStockResponseDTO = new ProductStockResponseDTO(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    productStockRequestDTO.quantity(),
+                    product.getStock(),
+                    "SUCCESS",
+                    null);
+
+//            ProductStockResponseDTO errorProductStockResponseDTO = new ProductStockResponseDTO(
+//                    productStockRequestDTO.productId(),
+//                    null,
+//                    null,
+//                    productStockRequestDTO.quantity(),
+//                    0,
+//                    "FAILED",
+//                    e.getMessage()
+//            );
+
+            responses.add(productStockResponseDTO);
+
+        }
+
+        return responses;
+    }
 
 
 }

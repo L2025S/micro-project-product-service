@@ -8,7 +8,7 @@ public record ProductStockResponseDTO(
         String name,
         BigDecimal price,
         int requestedQuantity,
-        int remainStock,
+        int remainingStock,
         String status,
         String message
 ) {
