@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
+import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.mapper.ProductMapper;
 import se.iths.lw.microprojectproductservice.model.Product;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
@@ -15,8 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -99,6 +99,18 @@ class ProductServiceTest {
         verify(productRepository).findById(id);
         verify(productMapper).toResponseDTO(product);
     }
+
+    @Test
+    void findById_shouldThrowException_whenProductNotFound() {
+
+        //Arrange
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+
+        //Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()->productService.findById(1L));
+    }
+
 
     @Test
     void findAll() {
