@@ -13,6 +13,7 @@ import se.iths.lw.microprojectproductservice.model.Product;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,7 +33,7 @@ class ProductServiceTest {
 
 
     @Test
-    void create() {
+    void create_shouldSaveProductAndReturnProductResponseDTO() {
 
         //Arrange
         ProductRequestDTO request = new ProductRequestDTO(
@@ -64,6 +65,7 @@ class ProductServiceTest {
         // Act
         ProductResponseDTO result = productService.create(request);
 
+        //Assert
         assertEquals("uuid-123", result.uuid());
         assertEquals(request.name(),result.name());
         assertEquals(request.price(), result.price());
@@ -77,12 +79,25 @@ class ProductServiceTest {
 
 
 
-
-
     }
 
     @Test
-    void findById() {
+    void findById_shouldReturnResponseDTO() {
+
+        //prepare
+        Long id = 1L;
+        Product product = mock(Product.class);
+        ProductResponseDTO response = mock(ProductResponseDTO.class);
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        when(productMapper.toResponseDTO(product)).thenReturn(response);
+
+        // Act
+        ProductResponseDTO result = productService.findById(id);
+
+        // Assert
+        assertEquals(response, result);
+        verify(productRepository).findById(id);
+        verify(productMapper).toResponseDTO(product);
     }
 
     @Test
