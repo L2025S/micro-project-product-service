@@ -14,6 +14,7 @@ import se.iths.lw.microprojectproductservice.model.Product;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,6 +115,24 @@ class ProductServiceTest {
 
     @Test
     void findAll() {
+
+        //Arrange
+        Product p1 = mock(Product.class);
+        Product p2 = mock(Product.class);
+
+        ProductResponseDTO r1 = mock(ProductResponseDTO.class);
+        ProductResponseDTO r2 = mock(ProductResponseDTO.class);
+
+        when(productRepository.findAll()).thenReturn(List.of(p1,p2));
+        when(productMapper.toResponseDTO(p1)).thenReturn(r1);
+        when(productMapper.toResponseDTO(p2)).thenReturn(r2);
+
+        // Act
+        List<ProductResponseDTO> result = productService.findAll();
+
+        //Assert
+        assertEquals(2, result.size());
+        assertTrue(result.containsAll((List.of(r1,r2))));
     }
 
     @Test
