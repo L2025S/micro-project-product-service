@@ -29,10 +29,10 @@ public class ProductService {
     public ProductResponseDTO create(ProductRequestDTO productRequestDTO){
 
        Product product = Product.create(
-               productRequestDTO.getName(),
-               productRequestDTO.getDescription(),
-               productRequestDTO.getPrice(),
-               productRequestDTO.getStock()
+               productRequestDTO.name(),
+               productRequestDTO.description(),
+               productRequestDTO.price(),
+               productRequestDTO.stock()
        );
        return productMapper.toResponseDTO(productRepository.save(product));
     }
