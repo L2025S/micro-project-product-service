@@ -248,7 +248,26 @@ class ProductServiceTest {
     }
 
     @Test
-    void updateBasicInfo() {
+    void updateBasicInfo_shouldUpdateAndReturnResponseDTO_whenValid() {
+        //Arrange
+        String uuid = "abc -123";
+        Product product =mock(Product.class);
+        Product saved = mock(Product.class);
+        ProductResponseDTO response = mock(ProductResponseDTO.class);
+
+        when(productRepository.findByUuid(uuid)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(saved);
+        when(productMapper.toResponseDTO(saved)).thenReturn(response);
+
+        // Act
+        ProductResponseDTO result = productService.updateBasicInfo(
+                uuid, "New Name", "New Desc", new BigDecimal("1000.00")
+        );
+
+        // Assert
+        assertEquals(response, result);
+        verify(product).updateBasicInfo("New Name", "New Desc", new BigDecimal("1000.00"));
+
     }
 
     @Test
