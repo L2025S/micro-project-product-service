@@ -37,6 +37,7 @@ public class ProductService {
                 productRequestDTO.price(),
                 productRequestDTO.stock()
         );
+
         return productMapper.toResponseDTO(productRepository.save(product));
     }
 

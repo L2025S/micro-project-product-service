@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import se.iths.lw.microprojectproductservice.exception.InsufficientStockException;
 import se.iths.lw.microprojectproductservice.exception.InvalidParameterException;
 import se.iths.lw.microprojectproductservice.exception.InvalidStockException;
 
@@ -91,8 +92,8 @@ public class Product {
         if (quantity <= 0) {
             throw new InvalidStockException("Stock cannot be negative.");
         }
-        if(this.stock <quantity) {
-            throw new InvalidStockException("Insufficient stock. Current: " + this.stock
+        if(this.stock < quantity) {
+            throw new InsufficientStockException("Insufficient stock. Current: " + this.stock
                     + ", requested " + quantity);
         }
         this.stock -= quantity;
