@@ -345,7 +345,17 @@ class ProductServiceTest {
                 ()->productService.deleteByUuid(" "));
     }
 
-    
+    @Test
+    void deleteByUuid_shouldThrow_whenNotFound(){
+        // Arrange
+        when(productRepository.findByUuid("abc")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()->productService.deleteByUuid("abc"));
+    }
+
+
 
     @Test
     void decreaseStockBatch() {
