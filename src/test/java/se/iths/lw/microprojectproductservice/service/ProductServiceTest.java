@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
+import se.iths.lw.microprojectproductservice.exception.InvalidParameterException;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.mapper.ProductMapper;
 import se.iths.lw.microprojectproductservice.model.Product;
@@ -268,6 +269,19 @@ class ProductServiceTest {
         assertEquals(response, result);
         verify(product).updateBasicInfo("New Name", "New Desc", new BigDecimal("1000.00"));
 
+    }
+
+    @Test
+    void updateBasicInfo_shouldThrow_whenInvalidParameter(){
+        //Arrange & Act & Assert
+        assertThrows(InvalidParameterException.class,
+                ()->productService.updateBasicInfo(null, "a", "b", BigDecimal.ONE));
+        assertThrows(InvalidParameterException.class,
+                ()->productService.updateBasicInfo("uuid", " ", "b", BigDecimal.ONE));
+        assertThrows(InvalidParameterException.class,
+                ()->productService.updateBasicInfo("uuid", "a", "b", null));
+        assertThrows(InvalidParameterException.class,
+                ()->productService.updateBasicInfo("uuid","a", "b", BigDecimal.ZERO));
     }
 
     @Test
