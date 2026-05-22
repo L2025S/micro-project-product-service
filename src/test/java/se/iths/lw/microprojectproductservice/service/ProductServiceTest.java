@@ -296,7 +296,15 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteById() {
+    void deleteById_shouldDelete_whenValid() {
+        // Arrange
+        when(productRepository.existsById(1L)).thenReturn(true);
+
+        // Act
+        productService.deleteById(1L);
+
+        // Assert
+        verify(productRepository).deleteById(1L);
     }
 
     @Test
