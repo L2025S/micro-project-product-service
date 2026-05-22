@@ -190,7 +190,18 @@ class ProductServiceTest {
     }
 
     @Test
-    void reduceStock() {
+    void reduceStock_shouldReduceAndReturnResponseDTO_whenProductExists() {
+        String uuid = "abc -123";
+        Product product = mock(Product.class);
+        Product saved = mock(Product.class);
+        ProductResponseDTO response = mock(ProductResponseDTO.class);
+
+        when(productRepository.findByUuid(uuid)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(saved);
+        when(productMapper.toResponseDTO(saved)).thenReturn(response);
+
+        ProductResponseDTO result = productService.reduceStock(uuid, 5);
+        verify(product).reduceStock(5);
     }
 
     @Test
