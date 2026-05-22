@@ -238,6 +238,16 @@ class ProductServiceTest {
     }
 
     @Test
+    void increaseStock_ShouldThrow_whenProductNotFound(){
+        // Arrange
+        when(productRepository.findByUuid("abc")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()->productService.increaseStock("abc",5));
+    }
+
+    @Test
     void updateBasicInfo() {
     }
 
