@@ -215,9 +215,26 @@ class ProductServiceTest {
     }
 
 
-
     @Test
-    void increaseStock() {
+    void increaseStock_shouldIncreaseAndReturnResponseDTO_whenProductExists() {
+        //Arrange
+        String uuid = "abc-123";
+        Product product = mock(Product.class);
+        Product saved = mock(Product.class);
+        ProductResponseDTO response = mock(ProductResponseDTO.class);
+
+        when(productRepository.findByUuid(uuid)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(saved);
+        when(productMapper.toResponseDTO(saved)).thenReturn(response);
+
+        // Act
+        ProductResponseDTO result = productService.increaseStock(uuid, 5);
+
+        //Assert
+        assertEquals(response, result);
+        verify(product).increaseStock(5);
+
+
     }
 
     @Test
