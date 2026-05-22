@@ -315,6 +315,16 @@ class ProductServiceTest {
     }
 
     @Test
+    void deleteById_shouldThrow_whenNotFound(){
+        //Arrange
+        when(productRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()->productService.deleteById(1L));
+    }
+
+    @Test
     void deleteByUuid() {
     }
 
