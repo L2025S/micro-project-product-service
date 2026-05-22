@@ -155,6 +155,18 @@ class ProductServiceTest {
     }
 
     @Test
+    void findByUuid_shouldThrowException_whenProductNotFound(){
+        // Arrange
+        when(productRepository.findByUuid("abc")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()-> productService.findByUuid("abc"));
+
+
+    }
+
+    @Test
     void testFindAll() {
     }
 
