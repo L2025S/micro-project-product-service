@@ -390,4 +390,28 @@ class ProductServiceTest {
         assertEquals(7, response.remainingStock());
 
     }
+
+    @Test
+    void decreaseStockBatch_shouldReturnFailedResponse_whenException(){
+        // Arrange
+        Long id = 1L;
+        ProductStockRequestDTO request = new ProductStockRequestDTO(id, 3);
+
+        when(productRepository.findById(id))
+                .thenThrow(new ProductNotFoundException("Product with ID" + id + " not found"));
+
+        // Act
+        List<ProductStockResponseDTO> result =
+                productService.decreaseStockBatch(List.of(request));
+
+        ProductStockResponseDTO response = result.get(0);
+
+        // Assert
+        assertEquals("FAILED", response.status());
+        assertEquals(id, response.productId());
+        assertEquals(3, response.requestedQuantity());
+        assertEquals(0, response.remainingStock());
+        assertNotNull(response.message());
+
+    }
 }
