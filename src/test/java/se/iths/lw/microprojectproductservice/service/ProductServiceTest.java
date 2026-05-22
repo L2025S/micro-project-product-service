@@ -1,6 +1,5 @@
 package se.iths.lw.microprojectproductservice.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -203,6 +202,19 @@ class ProductServiceTest {
         ProductResponseDTO result = productService.reduceStock(uuid, 5);
         verify(product).reduceStock(5);
     }
+
+    @Test
+    void reduceStock_ShouldThrow_whenProductNotFound(){
+        //Arrange
+        when(productRepository.findByUuid("abc")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()-> productService.reduceStock("abc", 5));
+
+    }
+
+
 
     @Test
     void increaseStock() {
