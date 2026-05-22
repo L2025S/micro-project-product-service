@@ -285,6 +285,17 @@ class ProductServiceTest {
     }
 
     @Test
+    void updateBasicInfo_shouldThrow_whenProductNotFound(){
+        //Arrange
+        when(productRepository.findByUuid("uuid")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ProductNotFoundException.class,
+                ()->productService.updateBasicInfo("uuid", "a", "b", BigDecimal.ONE));
+
+    }
+
+    @Test
     void deleteById() {
     }
 
