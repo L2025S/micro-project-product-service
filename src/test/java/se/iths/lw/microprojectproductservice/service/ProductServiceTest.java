@@ -325,7 +325,17 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteByUuid() {
+    void deleteByUuid_shouldDelete_whenValid() {
+        // Arrange
+        Product product = mock(Product.class);
+        when(productRepository.findByUuid("abc")).thenReturn(Optional.of(product));
+
+        // Act
+        productService.deleteByUuid("abc");
+
+        //Assert
+        verify(productRepository).findByUuid("abc");
+
     }
 
     @Test
