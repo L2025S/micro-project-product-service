@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
@@ -114,7 +117,7 @@ class ProductServiceTest {
 
 
     @Test
-    void findAll() {
+    void findAll_shouldReturnMappedList() {
 
         //Arrange
         Product p1 = mock(Product.class);
@@ -167,7 +170,23 @@ class ProductServiceTest {
     }
 
     @Test
-    void testFindAll() {
+    void testFindAll_Pageable_shouldReturnMappedPage() {
+        PageRequest pageable = PageRequest.of(0,10);
+        Product p1 = mock(Product.class);
+        Product p2 = mock(Product.class);
+        ProductResponseDTO  r1 = mock(ProductResponseDTO.class);
+        ProductResponseDTO  r2 = mock(ProductResponseDTO.class);
+
+        Page<Product> productPage = new PageImpl<>( List.of(p1, p2), pageable, 2);
+
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+        when(productMapper.toResponseDTO(p1)).thenReturn(r1);
+        when(productMapper.toResponseDTO(p2)).thenReturn(r2);
+
+        Page<ProductResponseDTO> result = productService.findAll(pageable);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals(List.of(r1, r2), result.getContent());
     }
 
     @Test
