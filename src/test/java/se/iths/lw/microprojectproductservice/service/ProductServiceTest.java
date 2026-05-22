@@ -339,6 +339,15 @@ class ProductServiceTest {
     }
 
     @Test
+    void deleteByUuid_shouldThrow_whenInvalid(){
+        //Arrange, Act & Assert
+        assertThrows(InvalidParameterException.class,
+                ()->productService.deleteByUuid(" "));
+    }
+
+    
+
+    @Test
     void decreaseStockBatch() {
     }
 }
