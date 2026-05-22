@@ -83,7 +83,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void findById_shouldReturnResponseDTO() {
+    void findById_shouldReturnResponseDTO_whenProductExists() {
 
         //prepare
         Long id = 1L;
@@ -136,7 +136,22 @@ class ProductServiceTest {
     }
 
     @Test
-    void findByUuid() {
+    void findByUuid_shouldReturnResponseDTO_whenProductExists() {
+
+        // Arrange
+        String uuid = "abc-123";
+        Product product = mock(Product.class);
+        ProductResponseDTO response = mock(ProductResponseDTO.class);
+
+        when(productRepository.findByUuid(uuid)).thenReturn(Optional.of(product));
+        when(productMapper.toResponseDTO(product)).thenReturn(response);
+
+        // Act
+        ProductResponseDTO result = productService.findByUuid(uuid);
+
+        // Assert
+        assertEquals(response, result);
+
     }
 
     @Test
