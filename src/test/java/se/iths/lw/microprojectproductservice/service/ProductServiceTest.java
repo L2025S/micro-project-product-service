@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockRequestDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockResponseDTO;
 import se.iths.lw.microprojectproductservice.exception.InvalidParameterException;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.mapper.ProductMapper;
@@ -358,6 +360,34 @@ class ProductServiceTest {
 
 
     @Test
-    void decreaseStockBatch() {
+    void decreaseStockBatch_shouldReturnSuccessResponse() {
+
+        // Arrange
+        Long id = 1L;
+        ProductStockRequestDTO request = new ProductStockRequestDTO(id, 3);
+
+        Product product = mock(Product.class);
+        Product saved = mock(Product.class);
+
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(saved);
+
+        when(saved.getId()).thenReturn(id);
+        when(saved.getName()).thenReturn("Test");
+        when(saved.getPrice()).thenReturn(new BigDecimal("1000.00"));
+        when(saved.getStock()).thenReturn(7);
+
+        // Act
+        List<ProductStockResponseDTO> result =
+                productService.decreaseStockBatch(List.of(request));
+
+        ProductStockResponseDTO response = result.get(0);
+
+        // Assert
+        assertEquals("SUCCESS", response.status());
+        assertEquals(id, response.productId());
+        assertEquals(3, response.requestedQuantity());
+        assertEquals(7, response.remainingStock());
+
     }
 }
