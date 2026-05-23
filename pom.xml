@@ -107,6 +107,8 @@
             <scope>test</scope>
         </dependency>
 
+
+
         <!--    MapStruct    -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -179,8 +181,6 @@
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
                                 </path>
-                <!-- ================== MapStruct  & lombok -mapstruct-binding =============================  -->
-
 
                             </annotationProcessorPaths>
                         </configuration>
