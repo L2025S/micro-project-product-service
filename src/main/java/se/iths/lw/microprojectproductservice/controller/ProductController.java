@@ -106,6 +106,7 @@ public class ProductController {
     @PostMapping("/stock/decrease")
     public ResponseEntity<List<ProductStockResponseDTO>> decreaseStockBatch(
             @Valid @RequestBody List<ProductStockRequestDTO> requests){
+
         List<ProductStockResponseDTO> responses = productService.decreaseStockBatch(requests);
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);

@@ -571,7 +571,29 @@ public class ProductControllerIntegrationTest {
 
 
 
+    @Test
+    @WithMockUser(roles = "USER")
+    void decreaseStockBatch_ShouldReturnBadRequest_WhenQuantityIsZero() throws Exception {
 
+        // Arrange
+        List<ProductStockRequestDTO> invalidRequests = List.of(
+                new ProductStockRequestDTO(1L, 0)
+        );
+
+        // Act & Assert
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequests)))
+                .andExpect(status().isBadRequest());
+
+        verify(productService, never()).decreaseStockBatch(anyList());
+
+    }
+
+
+
+    //====================================== ACCESS CONTROL TESTS ============================================
 
 
 
