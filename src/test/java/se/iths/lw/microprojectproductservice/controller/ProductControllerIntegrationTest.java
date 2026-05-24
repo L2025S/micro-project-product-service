@@ -15,6 +15,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockRequestDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockResponseDTO;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.service.ProductService;
 import tools.jackson.databind.ObjectMapper;
@@ -343,7 +345,7 @@ public class ProductControllerIntegrationTest {
                 sampleUuid,
                 "Test Product",
                 new BigDecimal("99.99"),
-                "Test Descriptioni",
+                "Test Description",
                 95,
                 now,
                 now
@@ -482,6 +484,47 @@ public class ProductControllerIntegrationTest {
 
         verify(productService, times(1)).deleteByUuid(nonExistentUuid);
     }
+
+
+
+    // =========================== BATCH STOCK DECREASE TESTS ==================================================
+
+    @Test
+    @WithMockUser(roles= "USER")
+    void decreaseStockBatch_ShouldReturnResponses_WhenValidRequests() throws Exception {
+
+        // Arrange
+        List<ProductStockRequestDTO> requests = List.of(
+                new ProductStockRequestDTO(1L, 5),
+                new ProductStockRequestDTO(2L, 3)
+        );
+
+        List<ProductStockResponseDTO> responses = List.of(
+                new ProductStockResponseDTO(1L, "Product 1", new BigDecimal("99.99"),
+                        5,95, "SUCCESS", null),
+                new ProductStockResponseDTO(2L, "Product 2", new BigDecimal("49.99"),
+                        3, 47, "SUCCESS", null));
+
+        when(productService.decreaseStockBatch(anyList())).thenReturn(responses);
+
+        // Act & Assert
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].productId").value(1))
+                .andExpect(jsonPath("$[0].requestedQuantity").value(5))
+                .andExpect(jsonPath("$[0].remainingStock").value(95))
+                .andExpect(jsonPath("$[0].status").value("SUCCESS"))
+                .andExpect(jsonPath("$[1].status").value("SUCCESS"));
+
+        verify(productService, times(1)).decreaseStockBatch(anyList());
+
+    }
+
+
 
 
 
