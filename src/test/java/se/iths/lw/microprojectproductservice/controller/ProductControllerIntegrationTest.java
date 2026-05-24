@@ -455,6 +455,19 @@ public class ProductControllerIntegrationTest {
         verify(productService, never()).deleteById(anyLong());
     }
 
+    @Test
+    @WithMockUser (roles = "ADMIN")
+    void deleteByUuid_ShouldReturnNoContent_WhenProductExists() throws Exception {
+        //Arrange
+        doNothing().when(productService).deleteByUuid(sampleUuid);
+
+        // Act & Assert
+        mockMvc.perform(delete("/products/uuid/{uuid}", sampleUuid)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        verify(productService, times(1)).deleteByUuid(sampleUuid);
+    }
+
 
 
 
