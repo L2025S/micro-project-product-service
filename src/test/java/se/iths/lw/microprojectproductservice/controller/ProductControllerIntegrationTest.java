@@ -391,6 +391,40 @@ public class ProductControllerIntegrationTest {
         verify(productService, times(1)).increaseStock(sampleUuid, 5);
     }
 
+    @Test
+    @WithMockUser( roles = "ADMIN")
+    void updateBasicInfo_ShouldReturnUpdatedProduct_WhenValidRequests() throws Exception {
+
+        // Arrange
+        ProductResponseDTO updatedProduct = new ProductResponseDTO(
+                sampleUuid,
+                "Updated Name",
+                new BigDecimal("199.99"),
+                "Updated Description",
+                100,
+                now,
+                now
+        );
+
+        when(productService.updateBasicInfo(eq(sampleUuid),eq("Updated Name"), eq("Updated Description"),
+                eq(new BigDecimal("199.99")))).thenReturn(updatedProduct);
+
+        // Act & Assert
+
+        mockMvc.perform(patch("/products/{uuid}/basic-info", sampleUuid)
+                .param("name","Updated Name")
+                .param("description","Updated Description")
+                .param("price", "199.99")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated Name"))
+                .andExpect(jsonPath("$.description").value("Updated Description"))
+                .andExpect(jsonPath("$.price").value(199.99));
+
+        verify(productService, times(1)).updateBasicInfo(eq(sampleUuid), eq("Updated Name"),
+                eq("Updated Description"), eq(new BigDecimal("199.99")));
+    }
+
 
 
 
