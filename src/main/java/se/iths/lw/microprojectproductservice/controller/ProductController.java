@@ -25,9 +25,6 @@ public class ProductController {
     private final ProductService productService;
 
 
-
-
-
  // ============================ READ =============================================
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id){

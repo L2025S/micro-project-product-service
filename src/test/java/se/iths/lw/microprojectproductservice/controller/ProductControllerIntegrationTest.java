@@ -425,6 +425,23 @@ public class ProductControllerIntegrationTest {
                 eq("Updated Description"), eq(new BigDecimal("199.99")));
     }
 
+   // ======================================= DELETE TESTS ===========================================
+
+    @Test
+    @WithMockUser( roles = "ADMIN")
+    void deleteById_ShouldReturnNoContent_WhenProductExists() throws Exception {
+
+        //Arrange
+        doNothing().when(productService).deleteById(1L);
+
+        //Act & Assert
+        mockMvc.perform(
+                delete("/products/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(productService, times(1)).deleteById(1L);
+    }
 
 
 
