@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
-import se.iths.lw.microprojectproductservice.exception.GlobalExceptionHandler;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.service.ProductService;
 import tools.jackson.databind.ObjectMapper;
@@ -307,6 +305,26 @@ public class ProductControllerIntegrationTest {
 
         // Act & Assert
 
+        mockMvc.perform(post("/products/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+
+        verify(productService, never()).create(any(ProductRequestDTO.class));
+    }
+
+    @Test
+    @WithMockUser(roles="ADMIN")
+    void create_ShouldReturnBadRequest_WhenNameExceedsMaxLength() throws Exception {
+        String longName = "A".repeat(401);
+        ProductRequestDTO invalidRequest = new ProductRequestDTO(
+                longName,
+                new BigDecimal("99.99"),
+                "Description",
+                10
+        );
+
+        // Act & Assert
         mockMvc.perform(post("/products/new")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
