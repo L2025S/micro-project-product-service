@@ -611,4 +611,18 @@ public class ProductControllerIntegrationTest {
         verify(productService, never()).updateBasicInfo(anyString(),anyString(), anyString(), any(BigDecimal.class));
     }
 
+
+    @Test
+    @WithMockUser( roles = "USER")
+    void deleteByUuid_ShouldReturnForbidden_WhenUserDoesNotHaveAdminRole() throws Exception {
+
+        // Arrange, Act & Assert
+
+        mockMvc.perform(delete("/products/uuid/{uuid}",sampleUuid)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(productService, never()).deleteByUuid(anyString());
+    }
+
 }
