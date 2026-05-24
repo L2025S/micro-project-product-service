@@ -62,7 +62,7 @@ public class ProductController {
     }
 
     //============================== UPDATE ===========================================
-    @PatchMapping("/{uudi}/stock/reduce")
+    @PatchMapping("/{uuid}/stock/reduce")
     public ResponseEntity<ProductResponseDTO> reduceStock(
             @PathVariable String uuid,
             @RequestParam int quantity){

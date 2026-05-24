@@ -28,8 +28,7 @@ import java.util.UUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.hamcrest.Matchers.*;
@@ -333,11 +332,36 @@ public class ProductControllerIntegrationTest {
         verify(productService, never()).create(any(ProductRequestDTO.class));
     }
 
+    // ===================================== UPDATE TESTS ============================================
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void reduceStock_ShouldReturnUpdatedProduct_WhenValidRequests() throws Exception {
+
+        // Arrange
+        ProductResponseDTO updatedProduct = new ProductResponseDTO(
+                sampleUuid,
+                "Test Product",
+                new BigDecimal("99.99"),
+                "Test Descriptioni",
+                95,
+                now,
+                now
+        );
 
 
+        when(productService.reduceStock(sampleUuid, 5)).thenReturn(updatedProduct);
 
+        // Act & Assert
 
+        mockMvc.perform(patch("/products/{uuid}/stock/reduce", sampleUuid)
+                .param("quantity", "5")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stock").value(95));
 
+        verify(productService, times(1)).reduceStock(sampleUuid, 5);
+    }
 
 
 
