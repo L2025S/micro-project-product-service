@@ -262,6 +262,29 @@ public class ProductControllerIntegrationTest {
                 10
         );
 
+        // Act & Assert
+
+        mockMvc.perform(post("/products/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+
+        verify(productService, never()).create(any(ProductRequestDTO.class));
+    }
+
+    @Test
+    @WithMockUser( roles = "ADMIN")
+    void create_ShouldReturnBadRequest_WhenPriceIsZeroOrNegative() throws Exception {
+        // Arrange
+
+        ProductRequestDTO invalidRequest = new ProductRequestDTO(
+                "Test Product",
+                new BigDecimal("0"),
+                "Description",
+                10
+        );
+
+        // Act & Assert
         mockMvc.perform(post("/products/new")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
