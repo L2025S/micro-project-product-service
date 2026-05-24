@@ -444,6 +444,18 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    @Test
+    @WithMockUser( roles = "USER")
+    void deleteById_ShouldReturnForbidden_WhenItIsNotAdmin() throws Exception {
+        // Arrange, Act & Assert
+        mockMvc.perform(delete("/products/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(productService, never()).deleteById(anyLong());
+    }
+
+
 
 
 }
