@@ -524,6 +524,51 @@ public class ProductControllerIntegrationTest {
 
     }
 
+    @Test
+    @WithMockUser( roles = "USER")
+    void decreaseStockBatch_ShouldHandlePartialFailures() throws Exception {
+        List<ProductStockRequestDTO> requests = List.of(
+                new ProductStockRequestDTO(1L, 5),
+                new ProductStockRequestDTO(999L, 3)
+        );
+
+        List<ProductStockResponseDTO> responses = List.of(
+                new ProductStockResponseDTO(
+                        1L,
+                        "Product 1",
+                        new BigDecimal("99.99"),
+                        5,
+                        9,
+                        "SUCCESS",
+                        null),
+                new ProductStockResponseDTO(
+                        999L,
+                        null,
+                        null,
+                        3,
+                        0,
+                        "FAILED",
+                        "Product with ID: 999 does not exist.")
+                );
+
+        when(productService.decreaseStockBatch(anyList())).thenReturn(responses);
+
+        // Act & Assert
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].status").value("SUCCESS"))
+                .andExpect(jsonPath("$[1].status").value("FAILED"))
+                .andExpect(jsonPath("$[1].productId").value(999))
+                .andExpect(jsonPath("$[1].message").value("Product with ID: 999 does not exist."));
+
+        verify(productService, times(1)).decreaseStockBatch(anyList());
+
+    }
+
 
 
 
