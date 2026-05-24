@@ -595,7 +595,20 @@ public class ProductControllerIntegrationTest {
 
     //====================================== ACCESS CONTROL TESTS ============================================
 
+    @Test
+    @WithMockUser(roles = "USER")
+    void updateBasicInfo_ShouldReturnForbidden_WhenUserDoesNotHaveAdminRole() throws Exception {
 
+        // Arrange, Act & Assert
 
+        mockMvc.perform(patch("/products/{uuid}/basic-info", sampleUuid)
+                .param("name","Updated Name")
+                .param("description", "Updated Description")
+                .param("price", "199.99")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(productService, never()).updateBasicInfo(anyString(),anyString(), anyString(), any(BigDecimal.class));
+    }
 
 }
