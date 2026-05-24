@@ -468,6 +468,23 @@ public class ProductControllerIntegrationTest {
         verify(productService, times(1)).deleteByUuid(sampleUuid);
     }
 
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteByUuid_ShouldReturnNotFound_WhenProductDoesNotExist() throws Exception {
+        // Arrange
+        String nonExistentUuid = UUID.randomUUID().toString();
+        doThrow(new ProductNotFoundException("Product with UUID: " + nonExistentUuid + " does  not exist."))
+                .when(productService).deleteByUuid(nonExistentUuid);
+
+        mockMvc.perform(delete("/products/uuid/{uuid}", nonExistentUuid)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        verify(productService, times(1)).deleteByUuid(nonExistentUuid);
+    }
+
+
+
 
 
 
