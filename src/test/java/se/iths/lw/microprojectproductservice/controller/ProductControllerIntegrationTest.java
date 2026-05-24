@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.hamcrest.Matchers.*;
@@ -39,7 +40,6 @@ import org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(GlobalExceptionHandler.class)
 public class ProductControllerIntegrationTest {
 
     @Autowired
@@ -216,6 +216,63 @@ public class ProductControllerIntegrationTest {
 
 
     // ================================== CREATE TESTS =================================================
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void create_ShouldReturnCreated_WhenValidRequests() throws Exception {
+        // Arrange
+        
+        when(productService.create(any(ProductRequestDTO.class))).thenReturn(sampleProductResponse);
+
+        // Act & Assert
+        mockMvc.perform(post("/products/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(sampleProductRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Test Product"))
+                .andExpect(jsonPath("$.price").value(99.99))
+                .andExpect(jsonPath("$.description").value("Test Description"))
+                .andExpect(jsonPath("$.stock").value(100));
+
+        verify(productService, times(1)).create(any(ProductRequestDTO.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void create_ShouldReturnForbidden_WhenUserDoesNotHaveAdminRole() throws Exception {
+
+        // Arrange
+        mockMvc.perform(post("/products/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(sampleProductRequest)))
+                .andExpect(status().isForbidden());
+
+        verify(productService, never()).create(any(ProductRequestDTO.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void create_ShouldReturnBadRequest_whenNameIsBlank() throws Exception {
+
+        //Arrange
+        ProductRequestDTO invalidRequest = new ProductRequestDTO(
+                "",
+                new BigDecimal("99.99"),
+                "Description",
+                10
+        );
+
+        mockMvc.perform(post("/products/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+
+        verify(productService, never()).create(any(ProductRequestDTO.class));
+    }
+
+
+
+
 
 
 
