@@ -363,6 +363,36 @@ public class ProductControllerIntegrationTest {
         verify(productService, times(1)).reduceStock(sampleUuid, 5);
     }
 
+    @Test
+    @WithMockUser( roles ="USER")
+    void increaseStock_ShouldReturnUpdatedProduct_WhenValidRequests() throws Exception {
+
+        // Arrange
+        ProductResponseDTO updatedProduct = new ProductResponseDTO(
+                sampleUuid,
+                "Test Product",
+                new BigDecimal(99.99),
+                "Test Description",
+                105,
+                now,
+                now
+        );
+
+        when(productService.increaseStock(sampleUuid, 5)).thenReturn(updatedProduct);
+
+        // Act & Assert
+
+        mockMvc.perform(patch("/products/{uuid}/stock/increase", sampleUuid)
+                .param("quantity","5")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stock").value(105));
+
+        verify(productService, times(1)).increaseStock(sampleUuid, 5);
+    }
+
+
+
 
 
 }
