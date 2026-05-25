@@ -12,7 +12,7 @@ public record ProductRequestDTO (
     @Size(max = 400, message="Product name can be at most 400 characters.")
     String name,
 
-    @NotBlank
+    @NotNull (message = "Price cannot be null.")
     @DecimalMin(value = "0.01", message="Price must be > 0.")
     BigDecimal price,
 

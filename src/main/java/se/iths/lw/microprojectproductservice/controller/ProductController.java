@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
@@ -23,9 +24,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-
-
-
 
 
  // ============================ READ =============================================
@@ -54,6 +52,7 @@ public class ProductController {
     }
 
     // ========================== CREATE ============================================
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/new")
     public ResponseEntity<ProductResponseDTO> create(@Valid @RequestBody ProductRequestDTO productRequestDTO){
 
@@ -62,7 +61,7 @@ public class ProductController {
     }
 
     //============================== UPDATE ===========================================
-    @PatchMapping("/{uudi}/stock/reduce")
+    @PatchMapping("/{uuid}/stock/reduce")
     public ResponseEntity<ProductResponseDTO> reduceStock(
             @PathVariable String uuid,
             @RequestParam int quantity){
@@ -77,6 +76,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.increaseStock(uuid, quantity));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{uuid}/basic-info")
     public ResponseEntity<ProductResponseDTO> updateBasicInfo(
             @PathVariable String uuid,
@@ -91,6 +91,7 @@ public class ProductController {
 
     //=================================== Delete ===============================
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id){
         productService.deleteById(id);
@@ -98,6 +99,7 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/uuid/{uuid}")
     public ResponseEntity<Void> deleteByUuid(@PathVariable String uuid){
         productService.deleteByUuid(uuid);
@@ -109,6 +111,7 @@ public class ProductController {
     @PostMapping("/stock/decrease")
     public ResponseEntity<List<ProductStockResponseDTO>> decreaseStockBatch(
             @Valid @RequestBody List<ProductStockRequestDTO> requests){
+
         List<ProductStockResponseDTO> responses = productService.decreaseStockBatch(requests);
 
         return ResponseEntity.status(HttpStatus.OK).body(responses);

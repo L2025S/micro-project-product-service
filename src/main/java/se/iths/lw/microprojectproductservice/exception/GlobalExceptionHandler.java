@@ -7,7 +7,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
@@ -52,13 +55,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
     }
 
+    //@Valid  @RequestBody  List<DTO>
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<String> handleHandlerMethodValidationException(HandlerMethodValidationException ex){
+        return ResponseEntity.badRequest().body("Validation failed: " + ex.getMessage());
+    }
+
     // System
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
         ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
-
-
-
 }

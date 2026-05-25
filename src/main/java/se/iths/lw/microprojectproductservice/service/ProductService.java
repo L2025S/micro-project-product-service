@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
@@ -29,6 +30,8 @@ public class ProductService {
 
 
     // ======================================= Create =======================================================
+
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponseDTO create(ProductRequestDTO productRequestDTO) {
 
         Product product = Product.create(
@@ -92,7 +95,7 @@ public class ProductService {
         return productMapper.toResponseDTO(saved);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponseDTO updateBasicInfo(String uuid, String name, String description, BigDecimal price) {
 
         // Step 1. Validate the parameters
@@ -123,6 +126,7 @@ public class ProductService {
 
     // ============================================= Delete ====================================================
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(Long id) {
 
         if (id == null || id <= 0) {
@@ -137,6 +141,7 @@ public class ProductService {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteByUuid(String uuid) {
         if (uuid == null || uuid.isBlank()) {
             throw new InvalidParameterException("Product UUID can not be null or blank.");
