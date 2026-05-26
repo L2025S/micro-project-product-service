@@ -1,4 +1,5 @@
 
+
 CREATE TABLE products (
                           id BIGSERIAL PRIMARY KEY,
                           uuid VARCHAR(36) NOT NULL UNIQUE,
