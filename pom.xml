@@ -10,7 +10,7 @@
     </parent>
     <groupId>se.iths.lw</groupId>
     <artifactId>micro-project-product-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>micro-project-product-service</name>
     <description>micro-project-product-service</description>
     <url/>
