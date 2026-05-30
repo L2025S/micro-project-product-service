@@ -57,6 +57,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity httpSecurity,
+            JwtDecoder jwtDecoder,
             JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
@@ -75,7 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
-                        jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+                        jwt.decoder(jwtDecoder).jwtAuthenticationConverter(jwtAuthenticationConverter)));
         httpSecurity.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return httpSecurity.build();
