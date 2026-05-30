@@ -198,7 +198,6 @@ public class ProductService {
 
             }
 
-            return responses;
         }
 
         return responses;
