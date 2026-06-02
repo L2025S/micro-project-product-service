@@ -158,4 +158,23 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    // ====================================== TEST 5: Delete product (ADMIN) ==================================
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteProductById_Success() throws Exception {
+        Product product = Product.create(
+                "Product D",
+                "will be deleted",
+                new BigDecimal("49.99"),
+                5
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(delete("/products/{id}", saved.getId()))
+                .andExpect(status().isNoContent());
+    }
+
+
 }
