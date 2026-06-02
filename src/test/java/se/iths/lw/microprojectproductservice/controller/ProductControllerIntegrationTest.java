@@ -411,6 +411,34 @@ public class ProductControllerIntegrationTest {
 
 
 
+    // ================================== TEST 11: update basic info (ADMIN) =========================================
+
+
+    @Test
+    @WithMockUser (roles = "ADMIN")
+    void updateBasicInfo_Success() throws Exception {
+        Product product = Product.create(
+                "Product J",
+                "Description J",
+                new BigDecimal("99.99"),
+                20
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/basic-info", saved.getUuid())
+                .param("name", "Product J updated")
+                .param("description", "Description J updated")
+                .param("price", "149.99"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("Product J updated")))
+                .andExpect(jsonPath("$.description", is("Description J updated")))
+                .andExpect(jsonPath("$.price", is(149.99)));
+    }
+
+
+
+
 
 
 
