@@ -241,4 +241,27 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    // ================================ TEST 7 : Return 400 when the stock is insufficient ============================
+
+    @Test
+    @WithMockUser( roles = "USER")
+    void reduceStock_InsufficientStock_Returns400() throws Exception {
+        Product product = Product.create(
+                "Product G",
+                "Description G",
+                new BigDecimal("199.99"),
+                5
+        );
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/stock/reduce", saved.getUuid())
+                .param("quantity", "10"))
+                .andExpect(status().isBadRequest());
+
+        Product unchangedProduct = productRepository.findById(saved.getId()).get();
+
+        assert(unchangedProduct.getStock() == 5);
+    }
+
+
 }
