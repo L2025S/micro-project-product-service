@@ -92,7 +92,7 @@ public class ProductControllerIntegrationTest {
 
     }
 
-    // ============================ TEST 2: List all the products ====================================
+    // ============================ TEST 2: List all the products (USER or ADMIN) ====================================
 
     @Test
     @WithMockUser( roles = "USER")
@@ -108,6 +108,26 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$",hasSize(2)))
                 .andExpect(jsonPath("$.[0].name").value("Product A"))
                 .andExpect(jsonPath("$.[1].name").value("Product B"));
+    }
+
+
+    // ================================ TEST 3: find product by ID (USER or ADMIN) ==================================
+
+    @Test
+    @WithMockUser( roles = "USER")
+    void getProductById_Success() throws Exception {
+        Product product = Product.create("Product C",
+                "Description C",
+                new BigDecimal("299.99"),
+                30);
+
+        Product savedProduct = productRepository.save(product);
+
+        mockMvc.perform(get("/products/{id}", savedProduct.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Product C"))
+                .andExpect(jsonPath("$.price").value("299.99"))
+                .andExpect(jsonPath("$.stock").value(30));
     }
 
 
