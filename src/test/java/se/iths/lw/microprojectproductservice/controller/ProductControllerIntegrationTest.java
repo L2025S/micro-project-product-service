@@ -130,5 +130,12 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.stock").value(30));
     }
 
+    @Test
+    @WithMockUser( roles = "USER")
+    void getProductById_NotFound_returns404()throws Exception{
+        mockMvc.perform(get("/products/9999"))
+                .andExpect(status().isNotFound());
+    }
+
 
 }
