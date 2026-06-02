@@ -308,4 +308,30 @@ public class ProductControllerIntegrationTest {
 
 
 
+    // ============================= TEST 9: find all (USER or Admin) ============================================
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void getAllProducts_Pagination_Success() throws Exception {
+        for(int i = 1; i <= 10; i++){
+            Product product = Product.create(
+                    "Product " + i,
+                    "Description",
+                    new BigDecimal("100.00"),
+                    i*10
+            );
+            productRepository.save(product);
+        }
+
+        mockMvc.perform(get("/products/all-paged")
+                .param("page","0")
+                .param("size","5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(5)))
+                .andExpect(jsonPath("$.totalElements", is (10)))
+                .andExpect(jsonPath("$.totalPages", is(2)));
+    }
+
+
+
 }
