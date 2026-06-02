@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
+import se.iths.lw.microprojectproductservice.dto.ProductStockRequestDTO;
 import se.iths.lw.microprojectproductservice.model.Product;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
 import tools.jackson.databind.ObjectMapper;
@@ -330,6 +331,43 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.content", hasSize(5)))
                 .andExpect(jsonPath("$.totalElements", is (10)))
                 .andExpect(jsonPath("$.totalPages", is(2)));
+    }
+
+
+    // ================== TEST 10 : batch stock decrease ( for order-service, ADMIN/USER) ==========================
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void batchDecreaseStock_Success() throws Exception {
+        Product product1 = Product.create(
+                "Batch Product 1",
+                "Description",
+                new BigDecimal("100.00"),
+                50);
+
+        Product product2 = Product.create(
+                "Batch Product 2",
+                "Description",
+                new BigDecimal("200.00"),
+                30);
+
+        productRepository.saveAll(List.of(product1, product2));
+
+        List<ProductStockRequestDTO> requests = List.of(
+                new ProductStockRequestDTO(product1.getId(), 10),
+                new ProductStockRequestDTO(product2.getId(), 5)
+        );
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].status", is("SUCCESS")))
+                .andExpect(jsonPath("$[0].remainingStock", is(40)))
+                .andExpect(jsonPath("$[1].status", is("SUCCESS")))
+                .andExpect(jsonPath("$[1].remainingStock", is(25)));
+
     }
 
 
