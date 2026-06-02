@@ -174,6 +174,27 @@ public class ProductControllerIntegrationTest {
 
         mockMvc.perform(delete("/products/{id}", saved.getId()))
                 .andExpect(status().isNoContent());
+
+        assert(productRepository.findById(saved.getId()).isEmpty());
+    }
+
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteProductByUuid_Success() throws Exception {
+        Product product = Product.create(
+                "Product UUID",
+                "will be deleted by uuid",
+                new BigDecimal("59.99"),
+                8
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(delete("/products/uuid/{uuid}",saved.getUuid()))
+                .andExpect(status().isNoContent());
+
+        assert(productRepository.findByUuid(saved.getUuid()).isEmpty());
     }
 
 
