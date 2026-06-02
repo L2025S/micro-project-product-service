@@ -264,4 +264,23 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    @Test
+    @WithMockUser(roles = "USER")
+    void reduceStock_NegativeQuantity_Returns400() throws Exception {
+        Product product = Product.create(
+                "Test Product",
+                "Negative quantity will fail",
+                new BigDecimal("99.99"),
+                100
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/stock/reduce", saved.getUuid())
+                .param("quantity", "-5"))
+                .andExpect(status().isBadRequest());
+    }
+
+
+
 }
