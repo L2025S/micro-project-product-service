@@ -198,4 +198,21 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    @Test
+    @WithMockUser( roles = "USER")
+    void deleteProduct_UserRole_ShouldReturnForbidden() throws Exception {
+        Product product = Product.create(
+                "Product E",
+                "will be deleted",
+                new BigDecimal("49.99"),
+                5
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(delete("/products/{id}", saved.getId()))
+                .andExpect(status().isForbidden());
+    }
+
+
 }
