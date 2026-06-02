@@ -282,5 +282,30 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    // ================================ TEST 8: increase stock (ADMIN or USER)  ===============================
+
+    @Test
+    @WithMockUser( roles = "USER")
+    void increaseStock_Success() throws Exception {
+        Product product = Product.create(
+                "Product H",
+                "Increase-stock test",
+                new BigDecimal("49.99"),
+                10
+                );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/stock/increase", saved.getUuid())
+                .param("quantity", "15"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stock").value(25));
+
+        Product updatedProduct = productRepository.findById(saved.getId()).get();
+
+        assert(updatedProduct.getStock() == 25);
+    }
+
+
 
 }
