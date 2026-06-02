@@ -437,6 +437,28 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    @Test
+    @WithMockUser( roles = "USER")
+    void updateBasicInfo_UserRole_ShouldReturnForbidden() throws Exception {
+        Product product = Product.create(
+                "Product K ",
+                "Description K",
+                new BigDecimal("99.99"),
+                20
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/basic-info", saved.getUuid())
+                .param("name", "Product K updated")
+                .param("description", "Description K updated")
+                .param("price", "149.99"))
+                .andExpect(status().isForbidden());
+    }
+
+
+
+
 
 
 
