@@ -92,5 +92,23 @@ public class ProductControllerIntegrationTest {
 
     }
 
+    // ============================ TEST 2: List all the products ====================================
+
+    @Test
+    @WithMockUser( roles = "USER")
+    void listAllProducts_Success() throws Exception{
+
+        Product product1 = Product.create("Product A", "Description A", new BigDecimal("99.99"),10);
+        Product product2 = Product.create("Product B", "Description B", new BigDecimal("149.99"),20);
+
+        productRepository.saveAll(List.of(product1, product2));
+
+        mockMvc.perform(get("/products/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
+                .andExpect(jsonPath("$.[0].name").value("Product A"))
+                .andExpect(jsonPath("$.[1].name").value("Product B"));
+    }
+
 
 }
