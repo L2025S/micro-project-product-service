@@ -371,5 +371,48 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    @Test
+    @WithMockUser( roles = "USER")
+    void batchDecreaseStock_PartialFailure_ReturnsMixedStatuses() throws Exception {
+
+        Product product1 = Product.create(
+                "Product-low stock",
+                "Description",
+                new BigDecimal("100.00"),
+                50
+        );
+
+        Product product2 = Product.create("Product - not enough stock",
+                "Description",
+                new BigDecimal("200.00"),
+                2);
+
+        productRepository.saveAll(List.of(product1, product2));
+
+        List<ProductStockRequestDTO> requests = List.of(
+                new ProductStockRequestDTO(product1.getId(), 10),
+                new ProductStockRequestDTO(product2.getId(), 5)
+        );
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].status", is("SUCCESS")))
+                .andExpect(jsonPath("$[0].remainingStock", is(40)))
+                .andExpect(jsonPath("$[1].status", is("FAILED")))
+                .andExpect(jsonPath("$[1].message",notNullValue()));
+
+    Product unchangedProduct = productRepository.findById(product2.getId()).get();
+    assert(unchangedProduct.getStock() == 2);
+
+
+    }
+
+
+
+
+
+
 
 }
