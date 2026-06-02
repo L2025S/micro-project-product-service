@@ -50,12 +50,12 @@ public class ProductControllerIntegrationTest {
 
     @Test
     @WithMockUser(roles ="ADMIN")
-    void skapaProduct_Success() throws Exception {
+    void createProduct_Success() throws Exception {
 
         ProductRequestDTO request = new ProductRequestDTO(
                 "Test Product",
                 new BigDecimal("199.99"),
-                "Detta är en testprodukt",
+                "This is a test product.",
                 50
         );
 
@@ -72,6 +72,23 @@ public class ProductControllerIntegrationTest {
         assert(savedProducts.size() ==1);
         assert(savedProducts.get(0).getName().equals("Test Product"));
         assert(savedProducts.get(0).getStock() == 50);
+
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void createProduct_UserRole_ShouldReturnForbidden() throws Exception {
+        ProductRequestDTO request  = new ProductRequestDTO(
+                "Test product",
+                new BigDecimal("199.99"),
+                        "This is a test product.",
+                        50);
+
+        mockMvc.perform(post("/products/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden());
+
 
     }
 
