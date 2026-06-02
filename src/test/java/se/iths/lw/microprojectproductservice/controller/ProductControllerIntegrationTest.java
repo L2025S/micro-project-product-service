@@ -138,4 +138,24 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    // ============================================ TEST 4: get product by uuid (ADMIN or USER) ===========================
+
+    @Test
+    @WithMockUser( roles = "USER")
+    void getProductByUuid_Success() throws Exception {
+        Product product = Product.create(
+                "UUID product",
+                "Description",
+                new BigDecimal("399.99"),
+                40);
+
+        Product savedProduct = productRepository.save(product);
+
+        mockMvc.perform(get("/products/uuid/{uuid}", savedProduct.getUuid()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("UUID product"))
+                .andExpect(jsonPath("$.uuid").value(savedProduct.getUuid()));
+    }
+
+
 }
