@@ -45,9 +45,11 @@ public class ProductService {
     }
 
     // ============================================== Read ================================================
+
     public ProductResponseDTO findById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id: " + id + " does not exist"));
+                .orElseThrow(() -> new ProductNotFoundException(
+                        "Product with id: " + id + " does not exist"));
 
         return productMapper.toResponseDTO(product);
     }
