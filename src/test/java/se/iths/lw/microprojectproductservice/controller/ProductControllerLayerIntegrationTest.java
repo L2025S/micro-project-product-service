@@ -58,6 +58,7 @@ public class ProductControllerLayerIntegrationTest {
         now = LocalDateTime.now();
 
         sampleProductResponse = new ProductResponseDTO(
+                1L,
                 sampleUuid,
                 "Test Product",
                 new BigDecimal("99.99"),
@@ -161,6 +162,7 @@ public class ProductControllerLayerIntegrationTest {
 
         // Arrange
         ProductResponseDTO productResponse2 = new ProductResponseDTO(
+                2L,
                 UUID.randomUUID().toString(),
                 "Product 2",
                 new BigDecimal("49.99"),
@@ -339,6 +341,7 @@ public class ProductControllerLayerIntegrationTest {
 
         // Arrange
         ProductResponseDTO updatedProduct = new ProductResponseDTO(
+                1L,
                 sampleUuid,
                 "Test Product",
                 new BigDecimal("99.99"),
@@ -368,9 +371,10 @@ public class ProductControllerLayerIntegrationTest {
 
         // Arrange
         ProductResponseDTO updatedProduct = new ProductResponseDTO(
+                1L,
                 sampleUuid,
                 "Test Product",
-                new BigDecimal(99.99),
+                new BigDecimal("99.99"),
                 "Test Description",
                 105,
                 now,
@@ -396,6 +400,7 @@ public class ProductControllerLayerIntegrationTest {
 
         // Arrange
         ProductResponseDTO updatedProduct = new ProductResponseDTO(
+                1L,
                 sampleUuid,
                 "Updated Name",
                 new BigDecimal("199.99"),

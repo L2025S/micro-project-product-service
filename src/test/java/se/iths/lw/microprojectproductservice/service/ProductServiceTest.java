@@ -56,6 +56,7 @@ class ProductServiceTest {
         LocalDateTime updatedAt = LocalDateTime.now();
 
         ProductResponseDTO response = new ProductResponseDTO(
+                1L,
                 "uuid-123",
                 request.name(),
                 request.price(),
