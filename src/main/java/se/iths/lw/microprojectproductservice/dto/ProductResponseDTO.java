@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public record ProductResponseDTO (
 
+    Long id,
     String uuid,
     String name,
     BigDecimal price,
