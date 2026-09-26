@@ -71,7 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         //Add an endpoint allowing order-service to use it.
-                        .requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/products/stock/decrease").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products/new").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/{uuid}/stock/**").hasAnyRole("USER","ADMIN")
