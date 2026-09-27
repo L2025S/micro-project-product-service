@@ -61,6 +61,7 @@ public class ProductControllerLayerIntegrationTest {
                 1L,
                 sampleUuid,
                 "Test Product",
+                null,
                 new BigDecimal("99.99"),
                 "Test Description",
                 100,
@@ -70,6 +71,7 @@ public class ProductControllerLayerIntegrationTest {
 
         sampleProductRequest = new ProductRequestDTO(
                 "Test Product",
+                null,
                 new BigDecimal("99.99"),
                 "Test Description",
                 100
@@ -165,6 +167,7 @@ public class ProductControllerLayerIntegrationTest {
                 2L,
                 UUID.randomUUID().toString(),
                 "Product 2",
+                null,
                 new BigDecimal("49.99"),
                 "Description 2",
                 50,
@@ -255,6 +258,7 @@ public class ProductControllerLayerIntegrationTest {
         //Arrange
         ProductRequestDTO invalidRequest = new ProductRequestDTO(
                 "",
+                null,
                 new BigDecimal("99.99"),
                 "Description",
                 10
@@ -277,6 +281,7 @@ public class ProductControllerLayerIntegrationTest {
 
         ProductRequestDTO invalidRequest = new ProductRequestDTO(
                 "Test Product",
+                null,
                 new BigDecimal("0"),
                 "Description",
                 10
@@ -298,6 +303,7 @@ public class ProductControllerLayerIntegrationTest {
         // Arrange
         ProductRequestDTO invalidRequest = new ProductRequestDTO(
                 "Test Product",
+                null,
                 new BigDecimal("99.99"),
                 "Description",
                 -5
@@ -319,6 +325,7 @@ public class ProductControllerLayerIntegrationTest {
         String longName = "A".repeat(401);
         ProductRequestDTO invalidRequest = new ProductRequestDTO(
                 longName,
+                null,
                 new BigDecimal("99.99"),
                 "Description",
                 10
@@ -344,6 +351,7 @@ public class ProductControllerLayerIntegrationTest {
                 1L,
                 sampleUuid,
                 "Test Product",
+                null,
                 new BigDecimal("99.99"),
                 "Test Description",
                 95,
@@ -374,6 +382,7 @@ public class ProductControllerLayerIntegrationTest {
                 1L,
                 sampleUuid,
                 "Test Product",
+                null,
                 new BigDecimal("99.99"),
                 "Test Description",
                 105,
@@ -403,6 +412,7 @@ public class ProductControllerLayerIntegrationTest {
                 1L,
                 sampleUuid,
                 "Updated Name",
+                null,
                 new BigDecimal("199.99"),
                 "Updated Description",
                 100,

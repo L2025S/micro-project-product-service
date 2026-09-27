@@ -11,6 +11,7 @@ public record ProductResponseDTO (
     Long id,
     String uuid,
     String name,
+    String imageUrl,
     BigDecimal price,
     String description,
     int stock,

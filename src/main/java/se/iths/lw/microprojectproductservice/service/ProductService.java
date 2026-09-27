@@ -36,6 +36,7 @@ public class ProductService {
 
         Product product = Product.create(
                 productRequestDTO.name(),
+                productRequestDTO.imageUrl(),
                 productRequestDTO.description(),
                 productRequestDTO.price(),
                 productRequestDTO.stock()

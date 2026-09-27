@@ -55,6 +55,7 @@ public class ProductControllerIntegrationTest {
 
         ProductRequestDTO request = new ProductRequestDTO(
                 "Test Product",
+                null,
                 new BigDecimal("199.99"),
                 "This is a test product.",
                 50
@@ -81,6 +82,7 @@ public class ProductControllerIntegrationTest {
     void createProduct_UserRole_ShouldReturnForbidden() throws Exception {
         ProductRequestDTO request  = new ProductRequestDTO(
                 "Test product",
+                null,
                 new BigDecimal("199.99"),
                         "This is a test product.",
                         50);
@@ -99,8 +101,8 @@ public class ProductControllerIntegrationTest {
     @WithMockUser( roles = "USER")
     void listAllProducts_Success() throws Exception{
 
-        Product product1 = Product.create("Product A", "Description A", new BigDecimal("99.99"),10);
-        Product product2 = Product.create("Product B", "Description B", new BigDecimal("149.99"),20);
+        Product product1 = Product.create("Product A", null,"Description A", new BigDecimal("99.99"),10);
+        Product product2 = Product.create("Product B", null,"Description B", new BigDecimal("149.99"),20);
 
         productRepository.saveAll(List.of(product1, product2));
 
@@ -117,7 +119,9 @@ public class ProductControllerIntegrationTest {
     @Test
     @WithMockUser( roles = "USER")
     void getProductById_Success() throws Exception {
-        Product product = Product.create("Product C",
+        Product product = Product.create(
+                "Product C",
+                null,
                 "Description C",
                 new BigDecimal("299.99"),
                 30);
@@ -146,6 +150,7 @@ public class ProductControllerIntegrationTest {
     void getProductByUuid_Success() throws Exception {
         Product product = Product.create(
                 "UUID product",
+                null,
                 "Description",
                 new BigDecimal("399.99"),
                 40);
@@ -166,6 +171,7 @@ public class ProductControllerIntegrationTest {
     void deleteProductById_Success() throws Exception {
         Product product = Product.create(
                 "Product D",
+                null,
                 "will be deleted",
                 new BigDecimal("49.99"),
                 5
@@ -185,6 +191,7 @@ public class ProductControllerIntegrationTest {
     void deleteProductByUuid_Success() throws Exception {
         Product product = Product.create(
                 "Product UUID",
+                null,
                 "will be deleted by uuid",
                 new BigDecimal("59.99"),
                 8
@@ -204,6 +211,7 @@ public class ProductControllerIntegrationTest {
     void deleteProduct_UserRole_ShouldReturnForbidden() throws Exception {
         Product product = Product.create(
                 "Product E",
+                null,
                 "will be deleted",
                 new BigDecimal("49.99"),
                 5
@@ -224,6 +232,7 @@ public class ProductControllerIntegrationTest {
     void reduceStock_Success() throws Exception {
         Product product = Product.create(
                 "Product F",
+                null,
                 "to reduce the stock",
                 new BigDecimal("79.99"),
                 100
@@ -249,6 +258,7 @@ public class ProductControllerIntegrationTest {
     void reduceStock_InsufficientStock_Returns400() throws Exception {
         Product product = Product.create(
                 "Product G",
+                null,
                 "Description G",
                 new BigDecimal("199.99"),
                 5
@@ -270,6 +280,7 @@ public class ProductControllerIntegrationTest {
     void reduceStock_NegativeQuantity_Returns400() throws Exception {
         Product product = Product.create(
                 "Test Product",
+                null,
                 "Negative quantity will fail",
                 new BigDecimal("99.99"),
                 100
@@ -290,6 +301,7 @@ public class ProductControllerIntegrationTest {
     void increaseStock_Success() throws Exception {
         Product product = Product.create(
                 "Product H",
+                null,
                 "Increase-stock test",
                 new BigDecimal("49.99"),
                 10
@@ -317,6 +329,7 @@ public class ProductControllerIntegrationTest {
         for(int i = 1; i <= 10; i++){
             Product product = Product.create(
                     "Product " + i,
+                    null,
                     "Description",
                     new BigDecimal("100.00"),
                     i*10
@@ -341,12 +354,14 @@ public class ProductControllerIntegrationTest {
     void batchDecreaseStock_Success() throws Exception {
         Product product1 = Product.create(
                 "Batch Product 1",
+                null,
                 "Description",
                 new BigDecimal("100.00"),
                 50);
 
         Product product2 = Product.create(
                 "Batch Product 2",
+                null,
                 "Description",
                 new BigDecimal("200.00"),
                 30);
@@ -377,12 +392,14 @@ public class ProductControllerIntegrationTest {
 
         Product product1 = Product.create(
                 "Product-low stock",
+                null,
                 "Description",
                 new BigDecimal("100.00"),
                 50
         );
 
         Product product2 = Product.create("Product - not enough stock",
+                null,
                 "Description",
                 new BigDecimal("200.00"),
                 2);
@@ -419,6 +436,7 @@ public class ProductControllerIntegrationTest {
     void updateBasicInfo_Success() throws Exception {
         Product product = Product.create(
                 "Product J",
+                null,
                 "Description J",
                 new BigDecimal("99.99"),
                 20
@@ -442,6 +460,7 @@ public class ProductControllerIntegrationTest {
     void updateBasicInfo_UserRole_ShouldReturnForbidden() throws Exception {
         Product product = Product.create(
                 "Product K ",
+                null,
                 "Description K",
                 new BigDecimal("99.99"),
                 20

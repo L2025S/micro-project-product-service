@@ -34,6 +34,9 @@ public class Product {
     private String name;
 
     @Column(length = 1000)
+    private String imageUrl;
+
+    @Column(length = 1000)
     private String description;
 
     @Column(nullable = false, precision = 12, scale = 2)
@@ -63,7 +66,7 @@ public class Product {
         return Objects.hashCode(uuid);
     }
 
-    public static Product create(String name, String description, BigDecimal price, int stock ) {
+    public static Product create(String name, String imageUrl, String description, BigDecimal price, int stock ) {
 
         if(price == null || price.compareTo(BigDecimal.ZERO) <= 0){
             throw new InvalidParameterException("Price must be positive.");
@@ -73,6 +76,7 @@ public class Product {
         }
         Product product  = new Product();
         product.name = name;
+        product.imageUrl = imageUrl;
         product.description = description;
         product.price = price;
         product.stock = stock;
@@ -86,6 +90,10 @@ public class Product {
         this.name = name;
         this.description = description;
         this.price = price;
+    }
+
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void reduceStock(int quantity) {
