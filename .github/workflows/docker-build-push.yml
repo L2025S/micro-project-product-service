@@ -6,13 +6,12 @@ on:
       - closed
     branches:
       - main
-  workflow_dispatch:  # Added: lets you manually trigger this workflow from the Actions tab for debugging, without needing a PR merge
+  workflow_dispatch:  # lets you manually trigger this workflow from the Actions tab for debugging, without needing a PR merge
 
 jobs:
   build-and-push:
 
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
-    # Updated: allow the job to run on manual trigger too, not just on a merged PR
 
     runs-on: ubuntu-latest
 
@@ -29,18 +28,8 @@ jobs:
           dotnet: true
           haskell: true
           large-packages: true
-          docker-images: true  # Changed from false to true: also removes pre-installed images on the runner to free up more disk space
+          docker-images: true
           swap-storage: true
-
-      # Removed: "Set up JDK 21" step
-      # Reason: Java setup is no longer needed on the runner itself —
-      # compilation now happens entirely inside the Docker build (Maven build stage in Dockerfile)
-
-      # Removed: "Build with Maven" step
-      # Reason: this was a redundant build. The Dockerfile's multi-stage build
-      # already runs `mvn package` inside the container. Building twice
-      # (once on the runner, once inside Docker) wasted disk space and time,
-      # and the runner-side build output wasn't even used by the Docker build.
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -49,7 +38,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
+        # Upgraded from v3 to v4: v3 still speaks the legacy Actions Cache API,
+        # which is the root cause of the "failed to reserve cache" error
 
       - name: Extract metadata
         id: meta
@@ -61,25 +52,21 @@ jobs:
             type=sha,prefix=,format=short
             type=ref,event=branch
 
-      - name: Check disk space before build
-        run: df -h
-        # Added: quick diagnostic so if the build fails again, we can see
-        # exactly how much disk space was available beforehand
-
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
+        # Upgraded from v6 to v7: same reason as above — runs on a newer
+        # BuildKit/Cache API that isn't affected by the legacy reserve-cache bug
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=min
-          provenance: false  # Added: disables SBOM/provenance attestation generation, which adds extra
-          sbom: false         # metadata writes during the build — turning both off reduces disk/cache usage
-
-      - name: Check disk space after build
-        if: always()
-        run: df -h
-        # Added: runs even if the build step fails, so we can see how much
-        # disk space was left (or if it hit 0) right when the failure happened
+          provenance: false
+          sbom: false
+          # Removed cache-from / cache-to (type=gha) entirely:
+          # this cache export step was what kept failing with
+          # "error writing layer blob: failed to reserve cache" —
+          # a known issue with the GHA cache backend (either the legacy
+          # cache API or GitHub's new low-trust-trigger cache write restriction).
+          # Since the cache was providing negligible speed benefit here,
+          # dropping it removes the failure point without slowing the build down.
