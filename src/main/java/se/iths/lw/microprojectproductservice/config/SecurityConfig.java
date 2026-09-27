@@ -76,6 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/products/new").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/{uuid}/stock/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/{uuid}/basic-info").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH,"/products/{uuid}/image").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

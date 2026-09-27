@@ -36,6 +36,7 @@ public class ProductService {
 
         Product product = Product.create(
                 productRequestDTO.name(),
+                productRequestDTO.imageUrl(),
                 productRequestDTO.description(),
                 productRequestDTO.price(),
                 productRequestDTO.stock()
@@ -204,6 +205,19 @@ public class ProductService {
 
         return responses;
 
+    }
+
+
+    // =================================== update product image =========================================
+
+    @PreAuthorize ("hasRole('ADMIN')")
+    public ProductResponseDTO updateImage(String uuid, String imageUrl) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ProductNotFoundException("Product with UUID: " + uuid + " does not exist."));
+
+        product.updateImage(imageUrl);
+
+        return productMapper.toResponseDTO(productRepository.save(product));
     }
 
 }

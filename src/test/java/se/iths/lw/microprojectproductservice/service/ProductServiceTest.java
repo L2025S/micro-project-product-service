@@ -44,6 +44,7 @@ class ProductServiceTest {
         //Arrange
         ProductRequestDTO request = new ProductRequestDTO(
         "Wireless Noise-Cancelling Headphones",
+        null,
         new BigDecimal("5999.99"),
         "Lightweight over-ear Bluetooth headphones with" +
                 " active noise cancellation,30-hour battery life, " +
@@ -59,6 +60,7 @@ class ProductServiceTest {
                 1L,
                 "uuid-123",
                 request.name(),
+                request.imageUrl(),
                 request.price(),
                 request.description(),
                 request.stock(),

@@ -88,6 +88,15 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{uuid}/image")
+    public ProductResponseDTO updateImage(
+            @PathVariable String uuid,
+            @RequestParam String imageUrl) {
+
+        return productService.updateImage(uuid, imageUrl);
+    }
+
 
     //=================================== Delete ===============================
 
