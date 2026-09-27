@@ -207,4 +207,17 @@ public class ProductService {
 
     }
 
+
+    // =================================== update product image =========================================
+
+    @PreAuthorize ("hasRole('ADMIN')")
+    public ProductResponseDTO updateImage(String uuid, String imageUrl) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found: " + uuid));
+
+        product.updateImage(imageUrl);
+
+        return productMapper.toResponseDTO(productRepository.save(product));
+    }
+
 }
