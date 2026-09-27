@@ -476,6 +476,45 @@ public class ProductControllerIntegrationTest {
     }
 
 
+    // ============================ TEST 12. updateImage test ==========================
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void updateImage_Success() throws Exception {
+        Product product = Product.create(
+                "Product L",
+                null,
+                "Description L",
+                new BigDecimal("99.99"),
+                20
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/image", saved.getUuid())
+                        .param("imageUrl", "https://example.com/images/product-l.jpg"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.imageUrl", is("https://example.com/images/product-l.jpg")));
+    }
+
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void updateImage_UserRole_ShouldReturnForbidden() throws Exception {
+        Product product = Product.create(
+                "Product M",
+                null,
+                "Description M",
+                new BigDecimal("99.99"),
+                20
+        );
+
+        Product saved = productRepository.save(product);
+
+        mockMvc.perform(patch("/products/{uuid}/image", saved.getUuid())
+                        .param("imageUrl", "https://example.com/images/product-m.jpg"))
+                .andExpect(status().isForbidden());
+    }
 
 
 
