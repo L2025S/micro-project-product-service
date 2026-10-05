@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 
-@ToString(exclude={"description"})
+@ToString(exclude={"description", "category"})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -45,6 +45,10 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="category_id")
+    private Category category;
+
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -66,7 +70,7 @@ public class Product {
         return Objects.hashCode(uuid);
     }
 
-    public static Product create(String name, String imageUrl, String description, BigDecimal price, int stock ) {
+    public static Product create(String name, String imageUrl, String description, BigDecimal price, int stock, Category category ) {
 
         if(price == null || price.compareTo(BigDecimal.ZERO) <= 0){
             throw new InvalidParameterException("Price must be positive.");
@@ -80,6 +84,7 @@ public class Product {
         product.description = description;
         product.price = price;
         product.stock = stock;
+        product.category = category;
         return product;
     }
 
@@ -94,6 +99,10 @@ public class Product {
 
     public void updateImage(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void changeCategory(Category category) {
+        this.category = category;
     }
 
     public void reduceStock(int quantity) {

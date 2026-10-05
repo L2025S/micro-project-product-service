@@ -58,7 +58,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 new BigDecimal("199.99"),
                 "This is a test product.",
-                50
+                50,
+                null
         );
 
         mockMvc. perform(post("/products/new")
@@ -85,7 +86,9 @@ public class ProductControllerIntegrationTest {
                 null,
                 new BigDecimal("199.99"),
                         "This is a test product.",
-                        50);
+                        50,
+                null
+        );
 
         mockMvc.perform(post("/products/new")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,8 +104,8 @@ public class ProductControllerIntegrationTest {
     @WithMockUser( roles = "USER")
     void listAllProducts_Success() throws Exception{
 
-        Product product1 = Product.create("Product A", null,"Description A", new BigDecimal("99.99"),10);
-        Product product2 = Product.create("Product B", null,"Description B", new BigDecimal("149.99"),20);
+        Product product1 = Product.create("Product A", null,"Description A", new BigDecimal("99.99"),10, null);
+        Product product2 = Product.create("Product B", null,"Description B", new BigDecimal("149.99"),20, null);
 
         productRepository.saveAll(List.of(product1, product2));
 
@@ -124,7 +127,9 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description C",
                 new BigDecimal("299.99"),
-                30);
+                30,
+                null
+        );
 
         Product savedProduct = productRepository.save(product);
 
@@ -153,7 +158,9 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description",
                 new BigDecimal("399.99"),
-                40);
+                40,
+                null
+        );
 
         Product savedProduct = productRepository.save(product);
 
@@ -174,7 +181,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "will be deleted",
                 new BigDecimal("49.99"),
-                5
+                5,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -194,7 +202,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "will be deleted by uuid",
                 new BigDecimal("59.99"),
-                8
+                8,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -214,7 +223,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "will be deleted",
                 new BigDecimal("49.99"),
-                5
+                5,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -235,7 +245,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "to reduce the stock",
                 new BigDecimal("79.99"),
-                100
+                100,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -261,7 +272,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description G",
                 new BigDecimal("199.99"),
-                5
+                5,
+                null
         );
         Product saved = productRepository.save(product);
 
@@ -283,7 +295,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Negative quantity will fail",
                 new BigDecimal("99.99"),
-                100
+                100,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -304,7 +317,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Increase-stock test",
                 new BigDecimal("49.99"),
-                10
+                10,
+                null
                 );
 
         Product saved = productRepository.save(product);
@@ -332,7 +346,8 @@ public class ProductControllerIntegrationTest {
                     null,
                     "Description",
                     new BigDecimal("100.00"),
-                    i*10
+                    i*10,
+                    null
             );
             productRepository.save(product);
         }
@@ -357,14 +372,16 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description",
                 new BigDecimal("100.00"),
-                50);
+                50,
+                null);
 
         Product product2 = Product.create(
                 "Batch Product 2",
                 null,
                 "Description",
                 new BigDecimal("200.00"),
-                30);
+                30,
+                null);
 
         productRepository.saveAll(List.of(product1, product2));
 
@@ -395,14 +412,16 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description",
                 new BigDecimal("100.00"),
-                50
+                50,
+                null
         );
 
         Product product2 = Product.create("Product - not enough stock",
                 null,
                 "Description",
                 new BigDecimal("200.00"),
-                2);
+                2,
+                null);
 
         productRepository.saveAll(List.of(product1, product2));
 
@@ -439,7 +458,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description J",
                 new BigDecimal("99.99"),
-                20
+                20,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -463,7 +483,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description K",
                 new BigDecimal("99.99"),
-                20
+                20,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -486,7 +507,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description L",
                 new BigDecimal("99.99"),
-                20
+                20,
+                null
         );
 
         Product saved = productRepository.save(product);
@@ -506,7 +528,8 @@ public class ProductControllerIntegrationTest {
                 null,
                 "Description M",
                 new BigDecimal("99.99"),
-                20
+                20,
+                null
         );
 
         Product saved = productRepository.save(product);

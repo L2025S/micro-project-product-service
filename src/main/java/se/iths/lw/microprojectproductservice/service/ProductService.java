@@ -10,10 +10,13 @@ import se.iths.lw.microprojectproductservice.dto.ProductRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductResponseDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductStockRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.ProductStockResponseDTO;
+import se.iths.lw.microprojectproductservice.exception.CategoryNotFoundException;
 import se.iths.lw.microprojectproductservice.exception.InvalidParameterException;
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.mapper.ProductMapper;
+import se.iths.lw.microprojectproductservice.model.Category;
 import se.iths.lw.microprojectproductservice.model.Product;
+import se.iths.lw.microprojectproductservice.repository.CategoryRepository;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final CategoryRepository categoryRepository;
 
 
     // ======================================= Create =======================================================
@@ -34,12 +38,17 @@ public class ProductService {
     @PreAuthorize("hasRole('ADMIN')")
     public ProductResponseDTO create(ProductRequestDTO productRequestDTO) {
 
+        Category category = productRequestDTO.categoryId() == null
+                ? null
+                : findCategoryOrThrow(productRequestDTO.categoryId());
+
         Product product = Product.create(
                 productRequestDTO.name(),
                 productRequestDTO.imageUrl(),
                 productRequestDTO.description(),
                 productRequestDTO.price(),
-                productRequestDTO.stock()
+                productRequestDTO.stock(),
+                category
         );
 
         return productMapper.toResponseDTO(productRepository.save(product));
@@ -74,6 +83,14 @@ public class ProductService {
     public Page<ProductResponseDTO> findAll(Pageable pageable) {
         return productRepository.findAll(pageable)
                 .map(productMapper::toResponseDTO);
+    }
+
+    public List<ProductResponseDTO> findByCategoryId( Long categoryId) {
+        findCategoryOrThrow(categoryId);
+        return productRepository.findByCategory(categoryId)
+                .stream()
+                .map(productMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     //============================================= Update ==================================================
@@ -125,6 +142,31 @@ public class ProductService {
 
         return productMapper.toResponseDTO(saved);
 
+    }
+
+    // =================================== update product image =========================================
+
+    @PreAuthorize ("hasRole('ADMIN')")
+    public ProductResponseDTO updateImage(String uuid, String imageUrl) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ProductNotFoundException("Product with UUID: " + uuid + " does not exist."));
+
+        product.updateImage(imageUrl);
+
+        return productMapper.toResponseDTO(productRepository.save(product));
+    }
+
+// ============================== update category =========================================================
+
+    public ProductResponseDTO updateCategory (String uuid, Long categoryId) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ProductNotFoundException("Product with UUID: " + uuid + " does not exist."));
+
+        Category category = findCategoryOrThrow(categoryId);
+
+        product.changeCategory(category);
+
+        return productMapper.toResponseDTO(productRepository.save(product));
     }
 
     // ============================================= Delete ====================================================
@@ -206,18 +248,13 @@ public class ProductService {
         return responses;
 
     }
+ // ================================================== private method =====================
 
-
-    // =================================== update product image =========================================
-
-    @PreAuthorize ("hasRole('ADMIN')")
-    public ProductResponseDTO updateImage(String uuid, String imageUrl) {
-        Product product = productRepository.findByUuid(uuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID: " + uuid + " does not exist."));
-
-        product.updateImage(imageUrl);
-
-        return productMapper.toResponseDTO(productRepository.save(product));
+    private Category findCategoryOrThrow(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new CategoryNotFoundException(
+                        "Category with id: " + categoryId + " does not exist."
+                ));
     }
 
 }

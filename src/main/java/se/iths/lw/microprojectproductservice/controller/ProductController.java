@@ -51,6 +51,11 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable Long categoryId){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findByCategoryId(categoryId));
+    }
+
     // ========================== CREATE ============================================
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/new")
@@ -96,6 +101,16 @@ public class ProductController {
 
         return productService.updateImage(uuid, imageUrl);
     }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{uuid}/category")
+    public ResponseEntity<ProductResponseDTO> updateCategory(
+            @PathVariable String uuid,
+            @RequestParam Long categoryId) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.updateCategory(uuid, categoryId));
+    }
+
 
 
     //=================================== Delete ===============================

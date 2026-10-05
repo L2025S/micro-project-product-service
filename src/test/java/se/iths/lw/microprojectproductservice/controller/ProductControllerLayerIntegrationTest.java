@@ -65,6 +65,7 @@ public class ProductControllerLayerIntegrationTest {
                 new BigDecimal("99.99"),
                 "Test Description",
                 100,
+                null,
                 now,
                 null
         );
@@ -74,7 +75,8 @@ public class ProductControllerLayerIntegrationTest {
                 null,
                 new BigDecimal("99.99"),
                 "Test Description",
-                100
+                100,
+                null
         );
     }
 
@@ -171,6 +173,7 @@ public class ProductControllerLayerIntegrationTest {
                 new BigDecimal("49.99"),
                 "Description 2",
                 50,
+                null,
                 now,
                 null
         );
@@ -261,7 +264,8 @@ public class ProductControllerLayerIntegrationTest {
                 null,
                 new BigDecimal("99.99"),
                 "Description",
-                10
+                10,
+                null
         );
 
         // Act & Assert
@@ -284,7 +288,8 @@ public class ProductControllerLayerIntegrationTest {
                 null,
                 new BigDecimal("0"),
                 "Description",
-                10
+                10,
+                null
         );
 
         // Act & Assert
@@ -306,7 +311,8 @@ public class ProductControllerLayerIntegrationTest {
                 null,
                 new BigDecimal("99.99"),
                 "Description",
-                -5
+                -5,
+                null
         );
 
         // Act & Assert
@@ -328,7 +334,8 @@ public class ProductControllerLayerIntegrationTest {
                 null,
                 new BigDecimal("99.99"),
                 "Description",
-                10
+                10,
+                null
         );
 
         // Act & Assert
@@ -355,6 +362,7 @@ public class ProductControllerLayerIntegrationTest {
                 new BigDecimal("99.99"),
                 "Test Description",
                 95,
+                null,
                 now,
                 now
         );
@@ -386,6 +394,7 @@ public class ProductControllerLayerIntegrationTest {
                 new BigDecimal("99.99"),
                 "Test Description",
                 105,
+                null,
                 now,
                 now
         );
@@ -416,6 +425,7 @@ public class ProductControllerLayerIntegrationTest {
                 new BigDecimal("199.99"),
                 "Updated Description",
                 100,
+                null,
                 now,
                 now
         );
