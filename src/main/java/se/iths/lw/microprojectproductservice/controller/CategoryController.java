@@ -5,10 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import se.iths.lw.microprojectproductservice.dto.CategoryRequestDTO;
 import se.iths.lw.microprojectproductservice.dto.CategoryResponseDTO;
 import se.iths.lw.microprojectproductservice.service.CategoryService;
@@ -33,6 +31,8 @@ public class CategoryController {
 
     // ============================== CREATE ============================
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/new")
     public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(categoryRequestDTO));
     }

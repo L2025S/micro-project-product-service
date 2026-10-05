@@ -16,6 +16,7 @@ import se.iths.lw.microprojectproductservice.exception.InvalidParameterException
 import se.iths.lw.microprojectproductservice.exception.ProductNotFoundException;
 import se.iths.lw.microprojectproductservice.mapper.ProductMapper;
 import se.iths.lw.microprojectproductservice.model.Product;
+import se.iths.lw.microprojectproductservice.repository.CategoryRepository;
 import se.iths.lw.microprojectproductservice.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,6 +34,8 @@ class ProductServiceTest {
     ProductRepository productRepository;
     @Mock
     ProductMapper productMapper;
+    @Mock
+    CategoryRepository categoryRepository;
     @InjectMocks
     ProductService productService;
 
@@ -49,7 +52,8 @@ class ProductServiceTest {
         "Lightweight over-ear Bluetooth headphones with" +
                 " active noise cancellation,30-hour battery life, " +
                 "and fast charging support.",
-        250);
+        250,
+                null);
 
         Product saved = mock(Product.class);
 
@@ -64,6 +68,7 @@ class ProductServiceTest {
                 request.price(),
                 request.description(),
                 request.stock(),
+                null,
                 createdAt,
                 updatedAt
         );

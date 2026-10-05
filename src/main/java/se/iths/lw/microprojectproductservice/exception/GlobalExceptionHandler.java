@@ -29,6 +29,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(productNotFoundException.getMessage());
     }
 
+
+    // A missing category returns 404 Not Found.
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<String> handleCategoryNotFoundException(
+            CategoryNotFoundException categoryNotFoundException
+    ) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(categoryNotFoundException.getMessage());
+    }
+
+    // Creating a category with an existing name returns 409 conflict.
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ResponseEntity<String> handleCategoryAlreadyExistsException(
+            CategoryAlreadyExistsException categoryAlreadyExistsException
+    ) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(categoryAlreadyExistsException.getMessage());
+    }
+
     // @RequestParam
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<String> handleMissingParam(

@@ -14,6 +14,7 @@ import se.iths.lw.microprojectproductservice.exception.InvalidParameterException
 @Table(name="categories", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Category {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

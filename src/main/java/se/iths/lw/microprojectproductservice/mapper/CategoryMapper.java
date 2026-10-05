@@ -10,4 +10,5 @@ public interface CategoryMapper {
 
     // MapStruct mapper Category -> CategoryResponseDTO
     CategoryResponseDTO toResponseDTO (Category category);
+
 }
