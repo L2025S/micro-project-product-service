@@ -15,6 +15,7 @@ public record ProductResponseDTO (
     BigDecimal price,
     String description,
     int stock,
+    CategoryResponseDTO category,
     LocalDateTime createdAt,
     LocalDateTime updatedAt) {
 
