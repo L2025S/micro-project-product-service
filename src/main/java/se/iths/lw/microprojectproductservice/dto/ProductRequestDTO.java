@@ -22,7 +22,9 @@ public record ProductRequestDTO (
     String description,
 
     @PositiveOrZero
-    int stock
+    int stock,
+
+    Long categoryId
 
     ){
             }
