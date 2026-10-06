@@ -71,6 +71,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/categories/new").hasRole("ADMIN")
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         //Add an endpoint allowing order-service to use it.
