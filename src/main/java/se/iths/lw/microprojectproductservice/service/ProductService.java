@@ -87,7 +87,7 @@ public class ProductService {
 
     public List<ProductResponseDTO> findByCategoryId( Long categoryId) {
         findCategoryOrThrow(categoryId);
-        return productRepository.findByCategory(categoryId)
+        return productRepository.findByCategoryId(categoryId)
                 .stream()
                 .map(productMapper::toResponseDTO)
                 .collect(Collectors.toList());
