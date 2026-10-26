@@ -24,20 +24,25 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfig { // Security setup for product-service: validates JWTs from the auth service and protects endpoints by role
 
     @Value("${AUTH_SERVER_URL:http://localhost:8080}")
     private String authServerUrl;
 
+
+    // Verifies JWT signatures using the auth service's public keys (JWK set)
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(authServerUrl + "/auth/jwks").build();
 
+        // Also check expiry and that the token was issued by our auth service
         jwtDecoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(authServerUrl));
 
         return jwtDecoder;
     }
 
+
+    // Turns the "roles" claim in the JWT into Spring authorities ( used by hasRole / hasAnyRole)
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
@@ -45,10 +50,13 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt ->
         {
             List<String> roles = jwt.getClaimAsStringList("roles");
+            // No roles in the token: the user gets no authorities
             if (roles == null) {
                 return List.of();
             }
 
+
+            // Wrap each role name in an authority object
             return roles.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
@@ -57,6 +65,8 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
+
+    // Defines who may call which endpoint and how requests are authenticated
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity httpSecurity,
@@ -64,11 +74,15 @@ public class SecurityConfig {
             JwtAuthenticationConverter jwtAuthenticationConverter,
             CorsConfigurationSource corsConfigurationSource) throws Exception {
         httpSecurity
+                // Use the CORS rules from CorsConfig
                 .cors(cors ->cors.configurationSource(corsConfigurationSource))
+                // CSRF protection off ( the API is stateless)
                 .csrf(AbstractHttpConfigurer::disable)
+                // No server-side sessions: every request must carry its own token
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        // Browser preflight requests are always allowed
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/categories/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/categories/new").hasRole("ADMIN")
@@ -84,11 +98,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH,"/products/{uuid}/category").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated())// Everything else requires a valid login
+                // Read the JWT from the Authorization header or the cookie, then validate it.
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .bearerTokenResolver(new CookieBearerTokenResolver())
                         .jwt(jwt ->
                                 jwt.decoder(jwtDecoder).jwtAuthenticationConverter(jwtAuthenticationConverter)));
+        // Allow pages from the same origin to show this app in a frame
         httpSecurity.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return httpSecurity.build();
